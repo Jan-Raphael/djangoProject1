@@ -44,12 +44,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 class Post(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)  # Allow null for anonymous posts
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Post by {self.user.username}"
+        return f"Post by {self.user.username if self.user else 'Anonymous'}"
 
 class Report(models.Model):
     reported_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='reports')

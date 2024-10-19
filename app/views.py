@@ -37,8 +37,9 @@ def profile_dashboard(request):
 def create_post(request):
     if request.method == 'POST':
         content = request.POST.get('content')
-        if not Post.objects.filter(user=request.user).exists():
-            Post.objects.create(user=request.user, content=content)
+        user = request.user if request.user.is_authenticated else None  # Use None if user is not logged in
+        if not request.user.is_authenticated or not Post.objects.filter(user=request.user).exists():
+            Post.objects.create(user=user, content=content)
             messages.success(request, "Post created successfully.")
             return redirect('post_list')
         else:
@@ -46,6 +47,7 @@ def create_post(request):
             return redirect('create_post')
 
     return render(request, 'create_post.html')
+
 
 from django.core.paginator import Paginator
 from django.utils.html import format_html
