@@ -1,10 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Create Post{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card mx-auto" style="max-width: 600px;">
+        <div class="card-body">
+            <h2 class="card-title">Create a New Post</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="content">Post Content</label>
+                    <textarea class="form-control" id="content" name="content" rows="5" placeholder="Write your post here..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Post</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

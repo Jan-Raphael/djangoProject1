@@ -16,7 +16,7 @@ def register(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Account successfully created. Awaiting admin approval.")
-            return redirect('waiting_for_approval')  # Redirect to waiting page
+            return redirect('profile_dashboard')  # Redirect to waiting page
         else:
             messages.error(request, "There was an error creating your account. Please try again.")
     else:
@@ -34,7 +34,6 @@ def waiting_for_approval(request):
 def profile_dashboard(request):
     return render(request, 'profile_dashboard.html', {'user': request.user})
 
-@login_required
 def create_post(request):
     if request.method == 'POST':
         content = request.POST.get('content')
@@ -67,7 +66,7 @@ def truncate_content(content, length=100):
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator
 
-@staff_member_required
+
 def admin_dashboard(request):
     # Users pending approval
     pending_users = CustomUser.objects.filter(is_active=False).order_by('-date_joined')
@@ -95,7 +94,7 @@ def admin_dashboard(request):
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 
-@staff_member_required
+
 def approve_user(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
     user.is_active = True
@@ -103,14 +102,14 @@ def approve_user(request, user_id):
     messages.success(request, f"User {user.username} has been approved.")
     return redirect('admin_dashboard')
 
-@staff_member_required
+
 def delete_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     post.delete()
     messages.success(request, "Post has been deleted.")
     return redirect('admin_dashboard')
 
-@staff_member_required
+
 def deny_user(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
     user.delete()  # Delete the user from the database

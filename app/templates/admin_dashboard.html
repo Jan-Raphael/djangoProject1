@@ -1,10 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<h2>Admin Dashboard</h2>
+
+<h3>Pending User Approvals</h3>
+{% if user_page_obj %}
+    {% for user in user_page_obj %}
+        <div class="user p-3 mb-2 border rounded">
+            <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Contact Number:</strong> {{ user.contact_number }}</p>
+            <button class="btn btn-success" onclick="window.location.href='{% url 'approve_user' user.id %}'">Approve</button>
+        <button class="btn btn-danger" onclick="window.location.href='{% url 'deny_user' user.id %}'">Deny</button>
+
+        </div>
+    {% endfor %}
+    {% include 'pagination.html' with page_obj=user_page_obj %}
+{% else %}
+    <p>No users pending approval.</p>
+{% endif %}
+
+<h3>Posts Management</h3>
+{% for post in post_page_obj %}
+    <div class="post p-3 mb-2 border rounded">
+        <p>{{ post.content|truncatechars:100 }}</p>
+        <button class="btn btn-danger" onclick="window.location.href='{% url 'delete_post' post.id %}'">Delete</button>
+    </div>
+{% endfor %}
+{% include 'pagination.html' with page_obj=post_page_obj %}
+
+<h3>Reports</h3>
+{% for report in report_page_obj %}
+    <div class="report p-3 mb-2 border rounded">
+        <p>{{ report.message }}</p>
+        <p><strong>Reported By:</strong> {{ report.reported_by.email }}</p>
+    </div>
+{% endfor %}
+{% include 'pagination.html' with page_obj=report_page_obj %}
+{% endblock %}
